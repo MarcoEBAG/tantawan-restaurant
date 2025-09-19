@@ -3,19 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
-import { 
-  Clock, 
-  CheckCircle, 
-  AlertCircle, 
-  Search, 
-  Refresh,
-  Phone,
-  Calendar,
-  DollarSign,
-  ShoppingBag,
-  User,
-  Printer
-} from 'lucide-react';
 import { adminAPI } from '../services/api';
 import { toast } from 'sonner';
 
@@ -24,19 +11,16 @@ const AdminDashboard = () => {
   const [pendingOrders, setPendingOrders] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [currentView, setCurrentView] = useState('pending');
-  const [refreshInterval, setRefreshInterval] = useState(null);
 
   // Order status configurations
   const statusConfig = {
-    pending: { label: 'Wartend', color: 'bg-yellow-500', textColor: 'text-yellow-700', bgColor: 'bg-yellow-50' },
-    confirmed: { label: 'Bestätigt', color: 'bg-blue-500', textColor: 'text-blue-700', bgColor: 'bg-blue-50' },
-    preparing: { label: 'In Zubereitung', color: 'bg-orange-500', textColor: 'text-orange-700', bgColor: 'bg-orange-50' },
-    ready: { label: 'Bereit', color: 'bg-green-500', textColor: 'text-green-700', bgColor: 'bg-green-50' },
-    completed: { label: 'Abgeholt', color: 'bg-gray-500', textColor: 'text-gray-700', bgColor: 'bg-gray-50' },
-    cancelled: { label: 'Storniert', color: 'bg-red-500', textColor: 'text-red-700', bgColor: 'bg-red-50' }
+    pending: { label: 'Wartend', color: 'bg-yellow-500' },
+    confirmed: { label: 'Bestätigt', color: 'bg-blue-500' },
+    preparing: { label: 'In Zubereitung', color: 'bg-orange-500' },
+    ready: { label: 'Bereit', color: 'bg-green-500' },
+    completed: { label: 'Abgeholt', color: 'bg-gray-500' },
+    cancelled: { label: 'Storniert', color: 'bg-red-500' }
   };
 
   // Fetch initial data
@@ -45,7 +29,6 @@ const AdminDashboard = () => {
     
     // Set up auto-refresh every 30 seconds
     const interval = setInterval(fetchDashboardData, 30000);
-    setRefreshInterval(interval);
     
     return () => {
       if (interval) clearInterval(interval);
@@ -83,30 +66,11 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      fetchDashboardData();
-      return;
-    }
-
-    try {
-      const searchResults = await adminAPI.searchOrders(searchQuery);
-      setOrders(searchResults);
-    } catch (error) {
-      console.error('Error searching orders:', error);
-      toast.error('Fehler bei der Suche');
-    }
-  };
-
   const formatTime = (dateString) => {
     return new Date(dateString).toLocaleTimeString('de-CH', {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('de-CH');
   };
 
   const getNextStatus = (currentStatus) => {
@@ -124,24 +88,15 @@ const AdminDashboard = () => {
     const nextStatus = getNextStatus(order.status);
     
     return (
-      <Card className={`border-l-4 border-l-${config.color.replace('bg-', '')} ${config.bgColor} mb-4`}>
+      <Card className="mb-4 border-l-4" style={{borderLeftColor: config.color}}>
         <CardHeader className="pb-3">
           <div className="flex justify-between items-start">
             <div>
               <CardTitle className="text-lg font-bold">{order.order_number}</CardTitle>
-              <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
-                <span className="flex items-center">
-                  <User className="h-4 w-4 mr-1" />
-                  {order.customer.name}
-                </span>
-                <span className="flex items-center">
-                  <Phone className="h-4 w-4 mr-1" />
-                  {order.customer.phone}
-                </span>
-                <span className="flex items-center">
-                  <Clock className="h-4 w-4 mr-1" />
-                  {formatTime(order.pickup_time)}
-                </span>
+              <div className="text-sm text-gray-600 mt-1">
+                <div>👤 {order.customer.name}</div>
+                <div>📞 {order.customer.phone}</div>
+                <div>🕐 {formatTime(order.pickup_time)}</div>
               </div>
             </div>
             <Badge className={`${config.color} text-white`}>
@@ -183,8 +138,7 @@ const AdminDashboard = () => {
                   onClick={() => handleStatusUpdate(order.id, nextStatus)}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
-                  <CheckCircle className="h-4 w-4 mr-1" />
-                  {statusConfig[nextStatus].label}
+                  ✅ {statusConfig[nextStatus].label}
                 </Button>
               )}
               
@@ -195,25 +149,14 @@ const AdminDashboard = () => {
                   onClick={() => handleStatusUpdate(order.id, 'cancelled')}
                   className="border-red-300 text-red-600 hover:bg-red-50"
                 >
-                  <AlertCircle className="h-4 w-4 mr-1" />
-                  Stornieren
+                  ❌ Stornieren
                 </Button>
               )}
-              
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => window.print()}
-                className="border-gray-300"
-              >
-                <Printer className="h-4 w-4 mr-1" />
-                Drucken
-              </Button>
             </div>
           )}
           
           <div className="text-xs text-gray-500 mt-3 pt-3 border-t">
-            Bestellt: {formatDate(order.created_at)} um {formatTime(order.created_at)}
+            Bestellt: {formatTime(order.created_at)}
           </div>
         </CardContent>
       </Card>
@@ -243,8 +186,7 @@ const AdminDashboard = () => {
               🍜 Tantawan Admin Dashboard
             </h1>
             <Button onClick={fetchDashboardData} disabled={loading}>
-              <Refresh className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Aktualisieren
+              🔄 Aktualisieren
             </Button>
           </div>
 
@@ -258,7 +200,7 @@ const AdminDashboard = () => {
                       <p className="text-sm text-gray-600">Heute Bestellungen</p>
                       <p className="text-2xl font-bold">{stats.today.orders}</p>
                     </div>
-                    <ShoppingBag className="h-8 w-8 text-blue-500" />
+                    <div className="text-2xl">🛍️</div>
                   </div>
                 </CardContent>
               </Card>
@@ -270,7 +212,7 @@ const AdminDashboard = () => {
                       <p className="text-sm text-gray-600">Heute Umsatz</p>
                       <p className="text-2xl font-bold">CHF {stats.today.revenue}</p>
                     </div>
-                    <DollarSign className="h-8 w-8 text-green-500" />
+                    <div className="text-2xl">💰</div>
                   </div>
                 </CardContent>
               </Card>
@@ -282,7 +224,7 @@ const AdminDashboard = () => {
                       <p className="text-sm text-gray-600">Offene Bestellungen</p>
                       <p className="text-2xl font-bold">{stats.pending_orders}</p>
                     </div>
-                    <Clock className="h-8 w-8 text-orange-500" />
+                    <div className="text-2xl">⏰</div>
                   </div>
                 </CardContent>
               </Card>
@@ -294,7 +236,7 @@ const AdminDashboard = () => {
                       <p className="text-sm text-gray-600">Letzte Aktualisierung</p>
                       <p className="text-sm font-medium">{formatTime(stats.timestamp)}</p>
                     </div>
-                    <Calendar className="h-8 w-8 text-purple-500" />
+                    <div className="text-2xl">🕐</div>
                   </div>
                 </CardContent>
               </Card>
@@ -302,124 +244,76 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Main Content */}
-        <div className="space-y-6">
-          {/* Navigation Tabs */}
-          <div className="flex space-x-4 border-b">
-            <button
-              onClick={() => setCurrentView('pending')}
-              className={`px-4 py-2 font-medium border-b-2 transition-colors ${
-                currentView === 'pending' 
-                  ? 'border-black text-black' 
-                  : 'border-transparent text-gray-600 hover:text-black'
-              }`}
-            >
-              Küche ({pendingOrders.length})
-            </button>
-            <button
-              onClick={() => setCurrentView('today')}
-              className={`px-4 py-2 font-medium border-b-2 transition-colors ${
-                currentView === 'today' 
-                  ? 'border-black text-black' 
-                  : 'border-transparent text-gray-600 hover:text-black'
-              }`}
-            >
-              Heute ({orders.length})
-            </button>
-            <button
-              onClick={() => setCurrentView('search')}
-              className={`px-4 py-2 font-medium border-b-2 transition-colors ${
-                currentView === 'search' 
-                  ? 'border-black text-black' 
-                  : 'border-transparent text-gray-600 hover:text-black'
-              }`}
-            >
-              Suche
-            </button>
-          </div>
-
-          {/* Pending Orders - Kitchen View */}
-          {currentView === 'pending' && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="h-5 w-5 mr-2 text-orange-500" />
-                  Küchen-Übersicht - Offene Bestellungen
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {pendingOrders.length === 0 ? (
-                  <div className="text-center py-8">
-                    <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                    <p className="text-lg text-gray-600">Keine offenen Bestellungen! 🎉</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {pendingOrders.map(order => (
-                      <OrderCard key={order.id} order={order} />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Today's Orders */}
-          {currentView === 'today' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Heutige Bestellungen</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {orders.length === 0 ? (
-                  <div className="text-center py-8">
-                    <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-lg text-gray-600">Noch keine Bestellungen heute.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {orders.map(order => (
-                      <OrderCard key={order.id} order={order} showActions={false} />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Search */}
-          {currentView === 'search' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Bestellungen Suchen</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-4 mb-6">
-                  <div className="flex-1">
-                    <Input
-                      placeholder="Bestellnummer, Kundenname oder Telefon..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    />
-                  </div>
-                  <Button onClick={handleSearch}>
-                    <Search className="h-4 w-4 mr-2" />
-                    Suchen
-                  </Button>
-                </div>
-
-                {orders.length > 0 && (
-                  <div className="space-y-4">
-                    {orders.map(order => (
-                      <OrderCard key={order.id} order={order} showActions={false} />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
+        {/* Navigation */}
+        <div className="flex space-x-4 border-b mb-6">
+          <button
+            onClick={() => setCurrentView('pending')}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+              currentView === 'pending' 
+                ? 'border-black text-black' 
+                : 'border-transparent text-gray-600 hover:text-black'
+            }`}
+          >
+            🍳 Küche ({pendingOrders.length})
+          </button>
+          <button
+            onClick={() => setCurrentView('today')}
+            className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+              currentView === 'today' 
+                ? 'border-black text-black' 
+                : 'border-transparent text-gray-600 hover:text-black'
+            }`}
+          >
+            📅 Heute ({orders.length})
+          </button>
         </div>
+
+        {/* Content */}
+        {currentView === 'pending' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                🍳 Küchen-Übersicht - Offene Bestellungen
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {pendingOrders.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">🎉</div>
+                  <p className="text-lg text-gray-600">Keine offenen Bestellungen!</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {pendingOrders.map(order => (
+                    <OrderCard key={order.id} order={order} />
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {currentView === 'today' && (
+          <Card>
+            <CardHeader>
+              <CardTitle>📅 Heutige Bestellungen</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {orders.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">📋</div>
+                  <p className="text-lg text-gray-600">Noch keine Bestellungen heute.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {orders.map(order => (
+                    <OrderCard key={order.id} order={order} showActions={false} />
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
