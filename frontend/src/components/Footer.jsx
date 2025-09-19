@@ -39,6 +39,7 @@ const Footer = () => {
                 { name: 'Home', href: '#home' },
                 { name: 'Speisekarte', href: '#menu' },
                 { name: 'Über uns', href: '#about' },
+                { name: 'Newsletter', href: '#newsletter' },
                 { name: 'Kontakt', href: '#contact' }
               ].map((link) => (
                 <li key={link.name}>
@@ -72,26 +73,21 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Opening Hours */}
+          {/* Newsletter Signup */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white">Öffnungszeiten</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-300">Mo-Do:</span>
-                <span className="text-white">11:00-14:00, 17:00-21:30</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-300">Fr:</span>
-                <span className="text-white">11:00-14:00, 17:00-22:00</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-300">Sa:</span>
-                <span className="text-white">11:00-22:00</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-300">So:</span>
-                <span className="text-white">17:00-21:30</span>
-              </div>
+            <h4 className="text-lg font-semibold text-white">Newsletter</h4>
+            <p className="text-gray-300 text-sm leading-relaxed">
+              Bleiben Sie informiert über neue Gerichte und Angebote!
+            </p>
+            <a 
+              href="#newsletter"
+              className="inline-block bg-[#ECEC75] text-black px-4 py-2 rounded-lg font-semibold text-sm hover:bg-yellow-400 transition-colors duration-200"
+            >
+              Jetzt Anmelden
+            </a>
+            <div className="space-y-1 text-xs text-gray-400">
+              <p>📧 Wöchentlich freitags</p>
+              <p>🎁 Exklusive Angebote</p>
             </div>
           </div>
         </div>

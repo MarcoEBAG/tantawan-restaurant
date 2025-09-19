@@ -12,6 +12,7 @@ const Header = ({ cartItems = [], onCartOpen }) => {
     { name: 'Home', href: '#home' },
     { name: 'Speisekarte', href: '#menu' },
     { name: 'Über uns', href: '#about' },
+    { name: 'Newsletter', href: '#newsletter' },
     { name: 'Kontakt', href: '#contact' }
   ];
 
