@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from typing import List
 from datetime import datetime
-from ..models import Order, OrderCreate, OrderStatusUpdate, OrderStatus
-from ..database import get_database, generate_order_number
-from ..services.email_service import email_service
+from models import Order, OrderCreate, OrderStatusUpdate, OrderStatus
+from database import get_database, generate_order_number
+from services.email_service import email_service
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
