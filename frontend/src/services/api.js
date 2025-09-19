@@ -99,7 +99,7 @@ export const ordersAPI = {
     return response.data;
   },
 
-  // Update order status (admin functionality)
+  // Update order status
   updateOrderStatus: async (orderId, status) => {
     const response = await api.put(`/orders/${orderId}/status`, { status });
     return response.data;
@@ -108,6 +108,53 @@ export const ordersAPI = {
   // Get customer orders
   getCustomerOrders: async (phone) => {
     const response = await api.get(`/orders/customer/${phone}`);
+    return response.data;
+  }
+};
+
+// Admin API
+export const adminAPI = {
+  // Get all orders with filtering
+  getAllOrders: async (params = {}) => {
+    const response = await api.get('/admin/orders', { params });
+    return response.data;
+  },
+
+  // Get pending orders
+  getPendingOrders: async () => {
+    const response = await api.get('/admin/orders/pending');
+    return response.data;
+  },
+
+  // Get today's orders
+  getTodaysOrders: async () => {
+    const response = await api.get('/admin/orders/today');
+    return response.data;
+  },
+
+  // Update order status (admin)
+  updateOrderStatus: async (orderId, status) => {
+    const response = await api.put(`/admin/orders/${orderId}/status`, { status });
+    return response.data;
+  },
+
+  // Get order statistics
+  getOrderStats: async () => {
+    const response = await api.get('/admin/orders/stats');
+    return response.data;
+  },
+
+  // Search orders
+  searchOrders: async (query, limit = 20) => {
+    const response = await api.get('/admin/orders/search', { 
+      params: { q: query, limit } 
+    });
+    return response.data;
+  },
+
+  // Delete order
+  deleteOrder: async (orderId) => {
+    const response = await api.delete(`/admin/orders/${orderId}`);
     return response.data;
   }
 };

@@ -10,6 +10,7 @@ import Newsletter from "./components/Newsletter";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Cart from "./components/Cart";
+import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -58,35 +59,45 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Header 
-          cartItems={cartItems} 
-          onCartOpen={() => setIsCartOpen(true)} 
-        />
-        
         <Routes>
-          <Route path="/" element={
-            <main>
-              <Hero />
-              <Menu 
-                onAddToCart={handleAddToCart} 
-                cartItems={cartItems}
+          {/* Admin Dashboard Route */}
+          <Route path="/admin" element={<AdminDashboard />} />
+          
+          {/* Main Website Route */}
+          <Route path="*" element={
+            <>
+              <Header 
+                cartItems={cartItems} 
+                onCartOpen={() => setIsCartOpen(true)} 
               />
-              <About />
-              <Newsletter />
-              <Contact />
-            </main>
+              
+              <Routes>
+                <Route path="/" element={
+                  <main>
+                    <Hero />
+                    <Menu 
+                      onAddToCart={handleAddToCart} 
+                      cartItems={cartItems}
+                    />
+                    <About />
+                    <Newsletter />
+                    <Contact />
+                  </main>
+                } />
+              </Routes>
+
+              <Footer />
+
+              <Cart
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
+                cartItems={cartItems}
+                onUpdateCart={handleUpdateCart}
+                onClearCart={handleClearCart}
+              />
+            </>
           } />
         </Routes>
-
-        <Footer />
-
-        <Cart
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cartItems={cartItems}
-          onUpdateCart={handleUpdateCart}
-          onClearCart={handleClearCart}
-        />
 
         <Toaster position="top-right" />
       </BrowserRouter>
