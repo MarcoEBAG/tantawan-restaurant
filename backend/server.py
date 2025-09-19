@@ -5,7 +5,7 @@ import os
 import logging
 from pathlib import Path
 from database import connect_to_mongo, close_mongo_connection
-from routes import menu, orders, newsletter
+from routes import menu, orders, newsletter, admin
 
 
 ROOT_DIR = Path(__file__).parent
@@ -14,7 +14,7 @@ load_dotenv(ROOT_DIR / '.env')
 # Create the main app without a prefix
 app = FastAPI(
     title="Tantawan Restaurant API",
-    description="API for Tantawan Asian Restaurant ordering and newsletter system",
+    description="API for Tantawan Asian Restaurant ordering, newsletter system, and admin management",
     version="1.0.0"
 )
 
@@ -25,6 +25,7 @@ api_router = APIRouter(prefix="/api")
 api_router.include_router(menu.router)
 api_router.include_router(orders.router)
 api_router.include_router(newsletter.router)
+api_router.include_router(admin.router)
 
 # Health check endpoint
 @api_router.get("/")
@@ -41,7 +42,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

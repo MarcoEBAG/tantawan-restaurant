@@ -1,15 +1,20 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from typing import List
 from datetime import datetime
-from models import Order, OrderCreate, OrderStatusUpdate, OrderStatus
-from database import get_database, generate_order_number
+from ..models import Order, OrderCreate, OrderStatusUpdate, OrderStatus
+from ..database import get_database, generate_order_number
+from ..services.email_service import email_service
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
 
 @router.post("/", response_model=Order)
-async def create_order(order_data: OrderCreate, db=Depends(get_database)):
-    """Create a new order"""
+async def create_order(
+    order_data: OrderCreate, 
+    background_tasks: BackgroundTasks,
+    db=Depends(get_database)
+):
+    """Create a new order with automatic notifications"""
     try:
         # Calculate total
         total = sum(item.price * item.quantity for item in order_data.items)
@@ -30,6 +35,10 @@ async def create_order(order_data: OrderCreate, db=Depends(get_database)):
         result = await db.orders.insert_one(order.dict())
         
         if result.inserted_id:
+            # Add background tasks for notifications
+            background_tasks.add_task(email_service.send_order_notification, order)
+            background_tasks.add_task(email_service.send_order_to_printer, order)
+            
             return order
         else:
             raise HTTPException(status_code=500, detail="Failed to create order")
@@ -78,7 +87,7 @@ async def get_order_by_number(order_number: str, db=Depends(get_database)):
 
 @router.put("/{order_id}/status", response_model=Order)
 async def update_order_status(order_id: str, status_update: OrderStatusUpdate, db=Depends(get_database)):
-    """Update order status (admin functionality)"""
+    """Update order status"""
     try:
         # Find the order first
         order = await db.orders.find_one({"id": order_id})
@@ -117,7 +126,7 @@ async def get_orders(
     skip: int = 0,
     db=Depends(get_database)
 ):
-    """Get orders with optional filtering (admin functionality)"""
+    """Get orders with optional filtering"""
     try:
         query = {}
         if status:
