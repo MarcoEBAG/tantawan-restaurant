@@ -1,19 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent } from './ui/card';
-import { Mail, Check, Gift, Clock, Star } from 'lucide-react';
+import { Mail, Check, Gift, Clock, Star, Loader2 } from 'lucide-react';
+import { newsletterAPI } from '../services/api';
 import { toast } from 'sonner';
 
 const Newsletter = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscriptionCount, setSubscriptionCount] = useState(500); // Default fallback
+
+  // Fetch subscription count on component mount
+  useEffect(() => {
+    const fetchSubscriptionCount = async () => {
+      try {
+        const data = await newsletterAPI.getSubscriptionCount();
+        setSubscriptionCount(data.active_subscriptions);
+      } catch (error) {
+        console.error('Error fetching subscription count:', error);
+        // Keep default value on error
+      }
+    };
+
+    fetchSubscriptionCount();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!email) {
+    if (!email.trim()) {
       toast.error('Bitte geben Sie Ihre E-Mail-Adresse ein');
       return;
     }
@@ -26,18 +43,26 @@ const Newsletter = () => {
 
     setIsLoading(true);
 
-    // Mock API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await newsletterAPI.subscribe(email);
       
-      // Mock successful subscription
-      console.log('Newsletter subscription:', { email, timestamp: new Date().toISOString() });
+      console.log('Newsletter subscription successful:', response);
       
       setIsSubscribed(true);
       toast.success('🎉 Erfolgreich angemeldet! Willkommen im Tantawan Newsletter!');
       setEmail('');
+      
+      // Update subscription count
+      setSubscriptionCount(prev => prev + 1);
+      
     } catch (error) {
-      toast.error('Anmeldung fehlgeschlagen. Versuchen Sie es später erneut.');
+      console.error('Newsletter subscription failed:', error);
+      
+      if (error.message.includes('already subscribed')) {
+        toast.error('Diese E-Mail-Adresse ist bereits für unseren Newsletter angemeldet.');
+      } else {
+        toast.error(error.message || 'Anmeldung fehlgeschlagen. Versuchen Sie es später erneut.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +88,7 @@ const Newsletter = () => {
 
   if (isSubscribed) {
     return (
-      <section className="py-20 bg-gradient-to-br from-[#ECEC75] to-[#e6e67c]">
+      <section id="newsletter" className="py-20 bg-gradient-to-br from-[#ECEC75] to-[#e6e67c]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Card className="border-0 shadow-2xl bg-white/90 backdrop-blur-sm">
             <CardContent className="p-12">
@@ -95,7 +120,7 @@ const Newsletter = () => {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-br from-[#ECEC75] to-[#e6e67c]">
+    <section id="newsletter" className="py-20 bg-gradient-to-br from-[#ECEC75] to-[#e6e67c]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
@@ -161,7 +186,7 @@ const Newsletter = () => {
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center space-x-2">
-                        <div className="loading-spinner" />
+                        <Loader2 className="h-5 w-5 animate-spin" />
                         <span>Anmeldung läuft...</span>
                       </div>
                     ) : (
@@ -209,7 +234,7 @@ const Newsletter = () => {
                 <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
                   Newsletter Abonnenten
                 </p>
-                <p className="text-3xl font-bold text-black mt-1">500+</p>
+                <p className="text-3xl font-bold text-black mt-1">{subscriptionCount}+</p>
                 <p className="text-sm text-gray-500 mt-1">
                   Zufriedene Leser
                 </p>
