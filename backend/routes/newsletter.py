@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime
-from ..models import NewsletterSubscription, NewsletterSubscribe, NewsletterResponse
-from ..database import get_database
+from models import NewsletterSubscription, NewsletterSubscribe, NewsletterResponse
+from database import get_database
 
 router = APIRouter(prefix="/newsletter", tags=["newsletter"])
 
