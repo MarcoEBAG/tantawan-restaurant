@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List
 from datetime import datetime
-from ..models import Order, OrderCreate, OrderStatusUpdate, OrderStatus
-from ..database import get_database, generate_order_number
+from models import Order, OrderCreate, OrderStatusUpdate, OrderStatus
+from database import get_database, generate_order_number
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
