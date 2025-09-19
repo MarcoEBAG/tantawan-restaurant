@@ -26,6 +26,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [currentView, setCurrentView] = useState('pending');
   const [refreshInterval, setRefreshInterval] = useState(null);
 
   // Order status configurations
