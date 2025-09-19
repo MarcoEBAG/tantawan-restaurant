@@ -3,8 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { 
   Clock, 
   CheckCircle, 
@@ -16,8 +14,7 @@ import {
   DollarSign,
   ShoppingBag,
   User,
-  Printer,
-  Trash2
+  Printer
 } from 'lucide-react';
 import { adminAPI } from '../services/api';
 import { toast } from 'sonner';
