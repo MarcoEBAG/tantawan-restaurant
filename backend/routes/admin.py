@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Optional
 from datetime import datetime, timedelta
-from ..models import Order, OrderStatus, OrderStatusUpdate
-from ..database import get_database
+from models import Order, OrderStatus, OrderStatusUpdate
+from database import get_database
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
