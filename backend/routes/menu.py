@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List
-from ..models import MenuItem, MenuItemCreate, Category
-from ..database import get_database
+from models import MenuItem, MenuItemCreate, Category
+from database import get_database
 
 router = APIRouter(prefix="/menu", tags=["menu"])
 
