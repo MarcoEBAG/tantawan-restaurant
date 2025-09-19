@@ -4,8 +4,8 @@ from starlette.middleware.cors import CORSMiddleware
 import os
 import logging
 from pathlib import Path
-from .database import connect_to_mongo, close_mongo_connection
-from .routes import menu, orders, newsletter
+from database import connect_to_mongo, close_mongo_connection
+from routes import menu, orders, newsletter
 
 
 ROOT_DIR = Path(__file__).parent
