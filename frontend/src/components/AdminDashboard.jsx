@@ -303,15 +303,43 @@ const AdminDashboard = () => {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid grid-cols-3 w-full max-w-md">
-            <TabsTrigger value="pending">Küche ({pendingOrders.length})</TabsTrigger>
-            <TabsTrigger value="today">Heute ({orders.length})</TabsTrigger>
-            <TabsTrigger value="search">Suche</TabsTrigger>
-          </TabsList>
+        <div className="space-y-6">
+          {/* Navigation Tabs */}
+          <div className="flex space-x-4 border-b">
+            <button
+              onClick={() => setCurrentView('pending')}
+              className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+                currentView === 'pending' 
+                  ? 'border-black text-black' 
+                  : 'border-transparent text-gray-600 hover:text-black'
+              }`}
+            >
+              Küche ({pendingOrders.length})
+            </button>
+            <button
+              onClick={() => setCurrentView('today')}
+              className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+                currentView === 'today' 
+                  ? 'border-black text-black' 
+                  : 'border-transparent text-gray-600 hover:text-black'
+              }`}
+            >
+              Heute ({orders.length})
+            </button>
+            <button
+              onClick={() => setCurrentView('search')}
+              className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+                currentView === 'search' 
+                  ? 'border-black text-black' 
+                  : 'border-transparent text-gray-600 hover:text-black'
+              }`}
+            >
+              Suche
+            </button>
+          </div>
 
           {/* Pending Orders - Kitchen View */}
-          <TabsContent value="pending">
+          {currentView === 'pending' && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -334,10 +362,10 @@ const AdminDashboard = () => {
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
+          )}
 
           {/* Today's Orders */}
-          <TabsContent value="today">
+          {currentView === 'today' && (
             <Card>
               <CardHeader>
                 <CardTitle>Heutige Bestellungen</CardTitle>
@@ -357,10 +385,10 @@ const AdminDashboard = () => {
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
+          )}
 
           {/* Search */}
-          <TabsContent value="search">
+          {currentView === 'search' && (
             <Card>
               <CardHeader>
                 <CardTitle>Bestellungen Suchen</CardTitle>
@@ -390,8 +418,8 @@ const AdminDashboard = () => {
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          )}
+        </div>
       </div>
     </div>
   );
