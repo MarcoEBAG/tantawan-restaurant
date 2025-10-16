@@ -49,68 +49,812 @@ tantawan-theme/
     └── admin.php
 ```
 
-#### Schritt 3: Theme-Dateien erstellen
+#### Schritt 3: Theme-Dateien erstellen (Ausführliche Anleitung)
 
-**style.css:**
+### 📝 **1. style.css erstellen und speichern**
+
+**Schritt-für-Schritt:**
+
+1. **Texteditor öffnen** (Notepad++, VSCode, oder einfachen Texteditor)
+2. **Neues Dokument erstellen**
+3. **Folgenden Code einfügen:**
+
 ```css
 /*
 Theme Name: Tantawan Restaurant
 Description: Asiatisches Restaurant Theme mit Online-Bestellung
 Version: 1.0
 Author: Ihr Name
+Text Domain: tantawan
 */
 
-/* Hier den CSS-Inhalt aus /app/frontend/src/App.css einfügen */
+/* === TANTAWAN RESTAURANT STYLES === */
+
+/* CSS-Variablen für Farben */
+:root {
+  --color-primary: #ECEC75; /* Lime-Gelb */
+  --color-primary-dark: #e6e67c;
+  --color-black: #0f172a;
+  --color-white: #ffffff;
+  --color-gray-50: #f8fafc;
+  --color-gray-600: #64748b;
+}
+
+/* Basis-Styling */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: var(--color-black);
+  margin: 0;
+  padding: 0;
+}
+
+/* Header Styling */
+.site-header {
+  background: var(--color-white);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  padding: 120px 20px 80px;
+  text-align: center;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content h1 {
+  font-family: 'Crimson Text', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--color-black);
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.5rem;
+  color: var(--color-gray-600);
+  margin-bottom: 2rem;
+}
+
+/* Button Styling */
+.btn-primary {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 15px 30px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #1e293b;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* Menu Section */
+.menu-section {
+  padding: 80px 20px;
+  background: var(--color-gray-50);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.menu-item {
+  background: var(--color-white);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.menu-item:hover {
+  transform: translateY(-5px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-content p {
+    font-size: 1.2rem;
+  }
+  
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Container für Inhalt */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* WordPress-spezifische Klassen */
+.wp-block-group {
+  margin-bottom: 2rem;
+}
+
+.aligncenter {
+  text-align: center;
+}
+
+.alignwide {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
 ```
 
-**functions.php:**
+4. **Datei speichern:**
+   - **Datei** → **Speichern unter...**
+   - **Dateiname:** `style.css`
+   - **Dateityp:** "Alle Dateien" oder "CSS"
+   - **Speicherort:** Ihr Theme-Ordner `tantawan-theme/`
+
+### 📝 **2. functions.php erstellen und speichern**
+
+1. **Neues Dokument im Texteditor**
+2. **Folgenden PHP-Code einfügen:**
+
 ```php
 <?php
-function tantawan_enqueue_scripts() {
-    wp_enqueue_style('tantawan-style', get_stylesheet_uri());
-    wp_enqueue_script('tantawan-main', get_template_directory_uri() . '/assets/js/main.js', array(), '1.0.0', true);
-}
-add_action('wp_enqueue_scripts', 'tantawan_enqueue_scripts');
+/**
+ * Tantawan Restaurant WordPress Theme Functions
+ */
 
-// Menu Support
+// Sicherheit: Direkten Zugriff verhindern
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Theme Setup
+ */
 function tantawan_setup() {
-    add_theme_support('menus');
+    // Theme-Unterstützung hinzufügen
+    add_theme_support('title-tag');
+    add_theme_support('post-thumbnails');
+    add_theme_support('html5', array(
+        'search-form',
+        'comment-form',
+        'comment-list',
+        'gallery',
+        'caption',
+    ));
+    
+    // Menu-Unterstützung
     register_nav_menus(array(
-        'primary' => 'Primary Menu'
+        'primary' => 'Hauptmenü',
+        'footer'  => 'Footer-Menü',
     ));
 }
 add_action('after_setup_theme', 'tantawan_setup');
+
+/**
+ * Scripts und Styles einbinden
+ */
+function tantawan_enqueue_scripts() {
+    // Theme-Stylesheet
+    wp_enqueue_style(
+        'tantawan-style',
+        get_stylesheet_uri(),
+        array(),
+        '1.0.0'
+    );
+    
+    // Google Fonts
+    wp_enqueue_style(
+        'tantawan-fonts',
+        'https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap',
+        array(),
+        null
+    );
+    
+    // JavaScript (falls benötigt)
+    wp_enqueue_script(
+        'tantawan-main',
+        get_template_directory_uri() . '/assets/js/main.js',
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+    
+    // AJAX-URL für JavaScript verfügbar machen
+    wp_localize_script('tantawan-main', 'tantawan_ajax', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('tantawan_nonce'),
+    ));
+}
+add_action('wp_enqueue_scripts', 'tantawan_enqueue_scripts');
+
+/**
+ * Widget-Bereiche registrieren
+ */
+function tantawan_widgets_init() {
+    register_sidebar(array(
+        'name'          => 'Footer Widget Bereich',
+        'id'            => 'footer-widgets',
+        'description'   => 'Widgets für den Footer-Bereich',
+        'before_widget' => '<div class="footer-widget">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h3 class="widget-title">',
+        'after_title'   => '</h3>',
+    ));
+}
+add_action('widgets_init', 'tantawan_widgets_init');
+
+/**
+ * Bestellformular Shortcode
+ */
+function tantawan_order_form_shortcode($atts) {
+    ob_start();
+    ?>
+    <div id="tantawan-order-form" class="order-form-container">
+        <div class="order-form-header">
+            <h2>Online Bestellen</h2>
+            <p>Wählen Sie Ihre Gerichte und holen Sie sie ab!</p>
+        </div>
+        
+        <div class="menu-categories">
+            <button class="category-btn active" data-category="vorspeisen">Vorspeisen</button>
+            <button class="category-btn" data-category="hauptgerichte">Hauptgerichte</button>
+            <button class="category-btn" data-category="desserts">Desserts</button>
+        </div>
+        
+        <div id="menu-items" class="menu-items-grid">
+            <!-- Menu-Items werden hier dynamisch geladen -->
+        </div>
+        
+        <div id="cart-summary" class="cart-summary">
+            <h3>Warenkorb</h3>
+            <div id="cart-items"></div>
+            <div class="cart-total">
+                <strong>Gesamt: CHF <span id="total-price">0.00</span></strong>
+            </div>
+        </div>
+        
+        <div class="order-form">
+            <h3>Bestellinformationen</h3>
+            <form id="tantawan-order" method="post">
+                <div class="form-group">
+                    <label for="customer-name">Name *</label>
+                    <input type="text" id="customer-name" name="customer_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="customer-phone">Telefon *</label>
+                    <input type="tel" id="customer-phone" name="customer_phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pickup-time">Abholzeit *</label>
+                    <select id="pickup-time" name="pickup_time" required>
+                        <option value="">Bitte wählen...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="order-notes">Notizen (optional)</label>
+                    <textarea id="order-notes" name="order_notes" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-order">
+                    Bestellung aufgeben
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+    // Einfache JavaScript-Implementierung
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Tantawan Order Form loaded');
+        
+        // Hier würde die Bestelllogik implementiert werden
+        // Für WordPress ist dies eine vereinfachte Version
+    });
+    </script>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('tantawan_order', 'tantawan_order_form_shortcode');
+
+/**
+ * Speisekarte Shortcode
+ */
+function tantawan_menu_shortcode($atts) {
+    $atts = shortcode_atts(array(
+        'category' => 'all',
+    ), $atts);
+    
+    ob_start();
+    ?>
+    <div class="tantawan-menu">
+        <div class="menu-header">
+            <h2>Unsere Speisekarte</h2>
+            <p>Frisch zubereitet • Günstige Preise • Authentisch asiatisch</p>
+        </div>
+        
+        <div class="menu-grid">
+            <!-- Vorspeisen -->
+            <div class="menu-category">
+                <h3>Vorspeisen</h3>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Frühlingsrollen (4 Stück)</h4>
+                        <p>Knusprige Frühlingsrollen mit Gemüsefüllung, serviert mit süß-sauer Sauce</p>
+                    </div>
+                    <div class="menu-item-price">CHF 8.50</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Gyoza (6 Stück)</h4>
+                        <p>Japanische Teigtaschen mit Schweinefleisch und Gemüse</p>
+                    </div>
+                    <div class="menu-item-price">CHF 9.80</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Tom Kha Gai Suppe</h4>
+                        <p>Thai Kokosnusssuppe mit Huhn, Galangal und Zitronengras</p>
+                    </div>
+                    <div class="menu-item-price">CHF 7.90</div>
+                </div>
+            </div>
+            
+            <!-- Hauptgerichte -->
+            <div class="menu-category">
+                <h3>Hauptgerichte</h3>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Pad Thai mit Huhn</h4>
+                        <p>Klassische Thai-Nudeln mit Huhn, Ei, Bohnensprossen und Erdnüssen</p>
+                    </div>
+                    <div class="menu-item-price">CHF 16.50</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Sweet & Sour Schweinefleisch</h4>
+                        <p>Knuspriges Schweinefleisch mit Ananas, Paprika in süß-saurer Sauce</p>
+                    </div>
+                    <div class="menu-item-price">CHF 17.80</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Beef Teriyaki</h4>
+                        <p>Zartes Rindfleisch in Teriyaki-Sauce mit Sesam und Frühlingszwiebeln</p>
+                    </div>
+                    <div class="menu-item-price">CHF 19.90</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Vegetarisches Curry</h4>
+                        <p>Gemischtes Gemüse in cremiger Kokosmilch-Curry-Sauce</p>
+                    </div>
+                    <div class="menu-item-price">CHF 15.50</div>
+                </div>
+            </div>
+            
+            <!-- Desserts -->
+            <div class="menu-category">
+                <h3>Desserts</h3>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Mango Sticky Rice</h4>
+                        <p>Traditioneller Thai-Dessert mit süßem Klebreis und frischer Mango</p>
+                    </div>
+                    <div class="menu-item-price">CHF 6.50</div>
+                </div>
+                
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <h4>Sesam-Eiscreme</h4>
+                        <p>Hausgemachte Eiscreme mit schwarzem Sesam</p>
+                    </div>
+                    <div class="menu-item-price">CHF 5.50</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('tantawan_menu', 'tantawan_menu_shortcode');
+
+/**
+ * Custom Post Type für Speisekarte (Optional)
+ */
+function tantawan_create_menu_post_type() {
+    register_post_type('menu_item',
+        array(
+            'labels' => array(
+                'name' => 'Speisekarte',
+                'singular_name' => 'Gericht',
+            ),
+            'public' => true,
+            'has_archive' => true,
+            'supports' => array('title', 'editor', 'thumbnail', 'custom-fields'),
+            'menu_icon' => 'dashicons-food',
+        )
+    );
+}
+add_action('init', 'tantawan_create_menu_post_type');
 ?>
 ```
 
-**index.php:**
-```php
-<?php get_header(); ?>
+3. **Datei speichern:**
+   - **Dateiname:** `functions.php`
+   - **Dateityp:** "PHP" oder "Alle Dateien"
+   - **Wichtig:** Achten Sie darauf, dass keine Leerzeichen vor `<?php` oder nach `?>` stehen!
 
-<!-- Hier den HTML-Inhalt aus der React-Build einfügen -->
-<div id="tantawan-root">
+### 📝 **3. index.php erstellen und speichern**
+
+1. **Neues Dokument erstellen**
+2. **Vollständigen HTML/PHP-Code einfügen:**
+
+```php
+<?php
+/**
+ * Tantawan Restaurant - Haupttemplate
+ * 
+ * Das ist die Hauptseite Ihres Tantawan Restaurant Themes
+ */
+
+// Sicherheit
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+get_header(); ?>
+
+<main id="main" class="site-main">
     <!-- Hero Section -->
-    <section class="hero-section" style="background: linear-gradient(to bottom right, #ECEC75, #e6e67c);">
+    <section class="hero-section">
         <div class="container">
-            <h1>Tantawan</h1>
-            <p>Authentische Asiatische Küche</p>
-            <p>Frisch gekocht • Extrem fein • Günstige Preise</p>
+            <div class="hero-content">
+                <h1>Tantawan</h1>
+                <p class="hero-subtitle">Authentische Asiatische Küche</p>
+                <p class="hero-description">Frisch gekocht • Extrem fein • Günstige Preise</p>
+                <div class="hero-buttons">
+                    <a href="#menu" class="btn-primary">Jetzt Bestellen</a>
+                    <a href="#about" class="btn-secondary">Mehr erfahren</a>
+                </div>
+            </div>
         </div>
     </section>
-    
-    <!-- Menu Section -->
-    <section class="menu-section">
-        <?php include 'templates/menu.php'; ?>
+
+    <!-- Über uns Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Willkommen bei Tantawan</h2>
+                    <p>Seit der Eröffnung in Frauenfeld verwöhnen wir unsere Gäste mit authentischer asiatischer Küche. Unser Name "Tantawan" steht für Qualität, Frische und erschwinglichen Genuss.</p>
+                    <p>Wir kombinieren traditionelle Kochkunst mit modernem Service. Bestellen Sie einfach online und holen Sie Ihr frisch zubereitetes Essen ab - schnell, bequem und immer köstlich.</p>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">1000+</div>
+                            <div class="stat-label">Zufriedene Kunden</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">15-30</div>
+                            <div class="stat-label">Min Zubereitungszeit</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/restaurant-interior.jpg" 
+                         alt="Tantawan Restaurant Interior" 
+                         class="about-image">
+                </div>
+            </div>
+        </div>
     </section>
-    
-    <!-- Contact Section -->
-    <section class="contact-section">
-        <?php include 'templates/contact.php'; ?>
+
+    <!-- Speisekarte Section -->
+    <section id="menu" class="menu-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Unsere Speisekarte</h2>
+                <p>Entdecken Sie unsere Auswahl an frisch zubereiteten asiatischen Gerichten. Alle Preise verstehen sich für Takeaway.</p>
+            </div>
+            
+            <?php 
+            // Speisekarte-Shortcode anzeigen
+            echo do_shortcode('[tantawan_menu]'); 
+            ?>
+        </div>
     </section>
-</div>
+
+    <!-- Bestellformular Section -->
+    <section id="order" class="order-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Online Bestellen</h2>
+                <p>Bestellen Sie bequem online und holen Sie Ihr Essen ab!</p>
+            </div>
+            
+            <?php 
+            // Bestellformular-Shortcode anzeigen
+            echo do_shortcode('[tantawan_order]'); 
+            ?>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Newsletter</h2>
+                <p>Bleiben Sie auf dem Laufenden mit unserem Newsletter!</p>
+                
+                <form class="newsletter-form" method="post" action="<?php echo admin_url('admin-post.php'); ?>">
+                    <input type="hidden" name="action" value="tantawan_newsletter">
+                    <?php wp_nonce_field('tantawan_newsletter_nonce'); ?>
+                    
+                    <div class="form-row">
+                        <input type="email" name="newsletter_email" placeholder="Ihre E-Mail-Adresse" required>
+                        <button type="submit" class="btn-primary">Anmelden</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontakt Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Kontakt & Standort</h2>
+                    
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <h4>📍 Adresse</h4>
+                            <p>Zürcherstrasse 232<br>8500 Frauenfeld</p>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <h4>📞 Telefon</h4>
+                            <p><a href="tel:+41527212222">+41 52 721 22 22</a></p>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <h4>✉️ E-Mail</h4>
+                            <p><a href="mailto:info@tantawan.ch">info@tantawan.ch</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="opening-hours">
+                        <h4>🕐 Öffnungszeiten</h4>
+                        <div class="hours-list">
+                            <div class="hours-item">
+                                <span>Montag - Donnerstag</span>
+                                <span>11:00 - 14:00, 17:00 - 21:30</span>
+                            </div>
+                            <div class="hours-item">
+                                <span>Freitag</span>
+                                <span>11:00 - 14:00, 17:00 - 22:00</span>
+                            </div>
+                            <div class="hours-item">
+                                <span>Samstag</span>
+                                <span>11:00 - 22:00</span>
+                            </div>
+                            <div class="hours-item">
+                                <span>Sonntag</span>
+                                <span>17:00 - 21:30</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="map-container">
+                        <!-- Google Maps Einbettung -->
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2701.234567890123!2d8.901234567890123!3d47.556789012345678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sZ%C3%BCrcherstrasse%20232%2C%208500%20Frauenfeld!5e0!3m2!1sde!2sch!4v1234567890123!5m2!1sde!2sch" 
+                            width="100%" 
+                            height="300" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    
+                    <div class="takeaway-info">
+                        <h4>🍜 Takeaway Service</h4>
+                        <p>Bestellen Sie online und holen Sie Ihr Essen einfach ab. Kein Lieferservice - aber immer frisch zubereitet!</p>
+                        <p><strong>Zubereitungszeit:</strong> 15-30 Minuten je nach Bestellmenge</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <?php
+    // WordPress Loop für Posts (falls vorhanden)
+    if (have_posts()) :
+        echo '<section class="blog-section"><div class="container">';
+        echo '<h2>Neuigkeiten</h2>';
+        
+        while (have_posts()) : the_post(); ?>
+            <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+                <div class="post-meta">
+                    <span>📅 <?php the_date(); ?></span>
+                    <span>👤 <?php the_author(); ?></span>
+                </div>
+                <div class="post-content">
+                    <?php the_excerpt(); ?>
+                </div>
+                <a href="<?php the_permalink(); ?>" class="read-more">Weiterlesen →</a>
+            </article>
+        <?php endwhile;
+        
+        echo '</div></section>';
+    endif;
+    ?>
+
+</main>
 
 <?php get_footer(); ?>
 ```
+
+3. **Datei speichern:**
+   - **Dateiname:** `index.php`
+   - **Dateityp:** "PHP" oder "Alle Dateien"
+   - **Speicherort:** Ihr Theme-Ordner `tantawan-theme/`
+
+### 📝 **4. header.php und footer.php erstellen**
+
+**header.php:**
+```php
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="site-logo">
+                    <a href="<?php echo home_url(); ?>">
+                        <h1>Tantawan</h1>
+                    </a>
+                </div>
+                
+                <nav class="main-navigation">
+                    <?php
+                    wp_nav_menu(array(
+                        'theme_location' => 'primary',
+                        'menu_class'     => 'main-menu',
+                        'fallback_cb'    => false,
+                    ));
+                    ?>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="#order" class="btn-primary btn-small">Bestellen</a>
+                </div>
+            </div>
+        </div>
+    </header>
+```
+
+**footer.php:**
+```php
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Tantawan</h3>
+                    <p>Authentische asiatische Küche in Frauenfeld</p>
+                    <p>Zürcherstrasse 232, 8500 Frauenfeld</p>
+                    <p>📞 +41 52 721 22 22</p>
+                </div>
+                
+                <div class="footer-hours">
+                    <h4>Öffnungszeiten</h4>
+                    <p>Mo-Do: 11:00-14:00, 17:00-21:30</p>
+                    <p>Fr: 11:00-14:00, 17:00-22:00</p>
+                    <p>Sa: 11:00-22:00</p>
+                    <p>So: 17:00-21:30</p>
+                </div>
+                
+                <div class="footer-social">
+                    <h4>Folgen Sie uns</h4>
+                    <a href="#">Facebook</a>
+                    <a href="#">Instagram</a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <?php echo date('Y'); ?> Tantawan Restaurant. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <?php wp_footer(); ?>
+</body>
+</html>
+```
+
+### 💾 **So speichern Sie die Dateien korrekt:**
+
+1. **Datei speichern:**
+   - Strg+S (Windows) oder Cmd+S (Mac)
+   - Oder: Datei → Speichern unter...
+
+2. **Wichtige Einstellungen beim Speichern:**
+   - **Encoding:** UTF-8 (wichtig für deutsche Umlaute!)
+   - **Zeilenenden:** Unix/Linux (LF) wenn möglich
+   - **Dateiname:** Genau wie angegeben (z.B. `index.php`)
+   - **Dateierweiterung:** Manuell hinzufügen falls nötig
+
+3. **Ordnerstruktur nach dem Speichern:**
+```
+tantawan-theme/
+├── style.css ✅
+├── functions.php ✅
+├── index.php ✅
+├── header.php ✅
+├── footer.php ✅
+├── assets/
+│   ├── css/
+│   ├── js/
+│   └── images/
+└── templates/
+```
+
+### 📁 **Dateien zu WordPress hochladen:**
+
+1. **Theme-Ordner zippen:**
+   - Rechtsklick auf `tantawan-theme` Ordner
+   - "Senden an" → "ZIP-komprimierter Ordner"
+
+2. **In WordPress hochladen:**
+   - WordPress Admin → Design → Themes
+   - "Theme hinzufügen" → "Theme hochladen"
+   - ZIP-Datei auswählen → "Jetzt installieren"
+
+3. **Theme aktivieren:**
+   - Nach Installation → "Aktivieren"
 
 #### Schritt 4: WordPress Installation
 ```bash
